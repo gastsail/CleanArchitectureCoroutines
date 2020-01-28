@@ -13,11 +13,9 @@ class MainViewModel(useCase:IUseCase):ViewModel() {
 
     val fetchVersionCode = liveData(Dispatchers.IO) {
         emit(Resource.Loading())
-
         try{
             val version = useCase.getVersionCode()
             emit(version)
-
         }catch (e: Exception){
             emit(Resource.Failure(e))
         }
