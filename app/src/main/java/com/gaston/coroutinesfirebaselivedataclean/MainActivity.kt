@@ -1,7 +1,6 @@
 package com.gaston.coroutinesfirebaselivedataclean
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -11,8 +10,9 @@ import com.gaston.coroutinesfirebaselivedataclean.domain.UseCaseImpl
 import com.gaston.coroutinesfirebaselivedataclean.presentation.viewmodel.MainViewModel
 import com.gaston.coroutinesfirebaselivedataclean.presentation.viewmodel.MainViewModelFactory
 import com.gaston.coroutinesfirebaselivedataclean.vo.Resource
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 class MainActivity : BaseActivity() {
 
     private val viewModel by lazy { ViewModelProvider(this,MainViewModelFactory(UseCaseImpl(RepoImpl()))).get(MainViewModel::class.java) }
@@ -34,17 +34,27 @@ class MainActivity : BaseActivity() {
                 }
 
                 is Resource.Success -> {
-                    txt_version.text = result.data.toString()
+                    val actualVersion = result.data
+                    Toast.makeText(this,"Version: ${result.data}",Toast.LENGTH_SHORT).show()
+                    if(appIsOutDated(actualVersion)){
+                        showUpdateProgress()
+                    }
+
                     hideProgress()
                 }
 
                 is Resource.Failure -> {
                     Toast.makeText(this,"Ocurrio un error ${result.exception.message}",Toast.LENGTH_SHORT).show()
-                    Log.e("ERROR:",result.exception.message)
+                    hideProgress()
                 }
             }
         })
 
+    }
+
+    private fun appIsOutDated(actualVersion:Int): Boolean{
+        val currentVersion = BuildConfig.VERSION_CODE
+        return currentVersion < actualVersion
     }
 
 }

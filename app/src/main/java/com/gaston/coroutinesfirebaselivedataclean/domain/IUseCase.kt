@@ -1,6 +1,7 @@
 package com.gaston.coroutinesfirebaselivedataclean.domain
 
 import com.gaston.coroutinesfirebaselivedataclean.vo.Resource
+import kotlinx.coroutines.flow.Flow
 
 
 /**
@@ -8,5 +9,5 @@ import com.gaston.coroutinesfirebaselivedataclean.vo.Resource
  */
 interface IUseCase {
 
-    suspend fun getVersionCode(): Resource<Int>
+    suspend fun getVersionCode(): Flow<Resource<Int>>
 }
